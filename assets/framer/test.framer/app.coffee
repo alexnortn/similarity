@@ -8,6 +8,14 @@ Framer.Info =
 	twitter: ""
 	description: ""
 
+# Import Modules
+dragger = require "draggable"
+
+environment_machine = -> 
+	layer_background = new BackgroundLayer
+	backgroundColor: "white"
+
+environment_machine()
 
 tap_interaction = ->
 	button = new Layer
@@ -22,9 +30,6 @@ tap_interaction = ->
 		shadowColor: "rgba(128,128,128,0.25)"
 		width: 107
 		height: 107
-	
-	layer_background = new BackgroundLayer
-	    backgroundColor: "white"
 	
 	react_image = new Layer
 		width: 300
@@ -68,7 +73,8 @@ photo_loop = ->
 	for i in [0..10]
 		photos = new Layer
 			y: 250 * i
-			image: "https://unsplash.it/500/50#{i}" # Inline compute URL
+# 			image: "https://unsplash.it/500/50#{i}" # Inline compute URL
+			backgroundColor: "rgba(0,0,255,0.75)"
 			width: 750
 			height: 225
 			parent: scroll.content
@@ -96,7 +102,8 @@ create_pinch = ->
 	photo = new Layer
 		x: Align.center
 		y: Align.center
-		image: "https://unsplash.it/500/50" # Inline compute URL
+# 		image: "https://unsplash.it/500/50" # Inline compute URL
+		backgroundColor: "rgba(0,0,255, 0.75)"
 		width: 400
 		height: 400
 	
@@ -114,35 +121,25 @@ create_pinch = ->
 				scale: 1
 				rotation: 0
 			curve: "spring(300,20,0)"
-	
-	# Animate back to original position // Drag/Pan
-	photo.onDragEnd ->
-		photo.animate
-			properties:
-				scale: 1
-				rotation: 0
-				x: Align.center
-				y: Align.center
-			curve: "spring(300,20,0)"
+
+	# Add the dragging interaction defined in our module to photo layer
+	dragger.makeDraggable(photo)
 	
 	photo_child = new Layer
-		x: 0
-		y: 25
+		x: Align.center
+		y: Align.center
 		width: 50
 		height: 50
 		backgroundColor: 'red'
 		parent: photo
 
-# create_pinch()
+create_pinch()
 
 # Create a PageComponent 
 pager = ->
 	
 	square_size = 500
 	square_padding = 25
-	
-	layer_background = new BackgroundLayer
-		backgroundColor: "white"
 
 	page = new PageComponent
 		width: square_size
@@ -161,7 +158,77 @@ pager = ->
 			x: 0
 			y: (square_size + square_padding) * index
 
-pager()
+# pager()
+
+# Create Slider 
+slider_machine = ->
+
+	layer_friend = new Layer
+		x: Align.center
+		y: Align.center
+		width: 400
+		borderRadius: 50
+
+	slider = new SliderComponent
+		min: 0
+		max: 100
+		value: 50
+		knobSize: 40
+		parent: layer_friend
+		x: Align.center
+		y: Align.center
+	 
+	# Customize slider 
+	slider.backgroundColor = "#DDD"
+	 
+	# Customize fill 
+	slider.fill.backgroundColor = "#00AAFF"
+	 
+	# Customize knob 
+	slider.knob.shadowY = 2
+	
+	# Get the current value 
+	slider.onValueChange ->
+		print slider.value
+
+# slider_machine()
+
+
+# Button Class + Constructor
+# Create Class 
+button_machine = -> 
+	class Button extends Layer
+		constructor: (options) ->
+			super _.defaults options,
+				width: 300
+				height: 100
+				backgroundColor: "blue"
+				name: "button"
+
+			# Deactivate by default 
+			@deactivate()
+
+			# Add events handlers 
+			@onTapStart ->
+				@activate()
+
+			@onTapEnd ->
+				@deactivate()
+
+			@on Events.TapEnd, (event, layer) ->
+			    print "Clicked", layer.name
+
+		activate: ->
+			@backgroundColor = "red"
+		
+		deactivate: ->
+			@backgroundColor = "blue"
+
+	button = new Button
+
+# button_machine()
+
+
 
 
 

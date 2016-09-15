@@ -59,32 +59,66 @@ Framer.Info =
 # 	stateA:
 # 		backgroundColor: "rgba(65,65,65,1)"
 
-scroll = new ScrollComponent # Variable definition + constructor
-	size: Screen.size
-
-scroll.scrollHorizontal = false
+# scroll = new ScrollComponent # Variable definition + constructor
+# 	size: Screen.size
+# 
+# scroll.scrollHorizontal = false
 
 
 # Test Stuff --> Iteratively loop creating images sourced from the web
-for i in [0..10]
-	photos = new Layer
-		y: 250 * i
-		image: "https://unsplash.it/500/50#{i}" # Inline compute URL
-		width: 750
-		height: 225
-		parent: scroll.content
+# for i in [0..10]
+# 	photos = new Layer
+# 		y: 250 * i
+# 		image: "https://unsplash.it/500/50#{i}" # Inline compute URL
+# 		width: 750
+# 		height: 225
+# 		parent: scroll.content
+# 
+# 	profile = new Layer
+# 		parent: photos
+# 		width: 143
+# 		height: 143
+# 		y: 41
+# 		x: 41
+# 		borderRadius: 71
+# 		backgroundColor: "rgba(255,255,255,0.75)"
+# 		shadowSpread: 1
+# 		shadowColor: "rgba(122,122,122,0.5)"
+# 		shadowBlur: 25
 
-	profile = new Layer
-		parent: photos
-		width: 143
-		height: 143
-		y: 41
-		x: 41
-		borderRadius: 71
-		backgroundColor: "rgba(255,255,255,0.75)"
-		shadowSpread: 1
-		shadowColor: "rgba(122,122,122,0.5)"
-		shadowBlur: 25
+photo = new Layer
+	x: Align.center
+	y: Align.center
+	image: "https://unsplash.it/500/50" # Inline compute URL
+	width: 400
+	height: 400
+
+
+# Enable pinching 
+photo.pinchable.enabled = true
+
+# Enable panning 
+photo.draggable.enabled = true
+ 
+# Animate back to original position // Pinch
+photo.onPinchEnd ->
+	photo.animate
+		properties:
+			scale: 1
+			rotation: 0
+		curve: "spring(300,20,0)"
+
+# Animate back to original position // Drag/Pan
+photo.onDragEnd ->
+	photo.animate
+		properties:
+			scale: 1
+			rotation: 0
+			x: Align.center
+			y: Align.center
+		curve: "spring(300,20,0)"
+
+
 
 
 
